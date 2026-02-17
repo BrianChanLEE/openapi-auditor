@@ -23,9 +23,10 @@ async function main() {
         const rawResults = await suite.runAll(endpoints);
 
         // 2. 분석 및 우선순위 산정
+        const priorityEngine = new PriorityEngine();
         const analyzedResults = rawResults.map(res => {
             const analysis = ResultAnalyzer.analyze(res);
-            const priority = PriorityEngine.calculate(analysis);
+            const { priority } = priorityEngine.calculate(analysis);
             return { ...analysis, priority };
         });
 

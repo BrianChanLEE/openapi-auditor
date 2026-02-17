@@ -1,0 +1,24 @@
+{
+  "metadata": {
+    "path": "/users",
+    "method": "GET",
+    "role": "READONLY",
+    "priority": "P1",
+    "category": "NETWORK",
+    "isSuccess": false,
+    "timestamp": "2026-02-17T13:53:54.153Z"
+  },
+  "request": {
+    "headers": {
+      "Authorization": "****",
+      "Content-Type": "application/json"
+    }
+  },
+  "response": {
+    "error": ""
+  },
+  "analysis": {
+    "reason": "네트워크 연결 또는 타임아웃이 발생했습니다",
+    "suggestedAction": "서버 상태 및 네트워크 인프라를 확인하십시오"
+  }
+}

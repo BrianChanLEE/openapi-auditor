@@ -2,7 +2,7 @@
 
 The automatically generated report suite is designed for both human review and machine-driven CI pipelines.
 
-## 📄 `REPORT.md` (Human Readable)
+## REPORT.md (Human Readable)
 
 Designed to be shared with stakeholders and developers as a clear action plan.
 
@@ -14,7 +14,7 @@ Designed to be shared with stakeholders and developers as a clear action plan.
 
 ---
 
-## 🤖 `REPORT.json` (Machine Readable)
+## REPORT.json (Machine Readable)
 
 A structured version of the audit results, perfect for custom CI scripts or dashboard integration.
 
@@ -35,7 +35,7 @@ A structured version of the audit results, perfect for custom CI scripts or dash
 
 ---
 
-## 📦 `artifacts/*.json` (Detailed Logs)
+## artifacts/*.json (Detailed Logs)
 
 For every failed test, a dedicated JSON file is created in the `artifacts/` folder.
 These files contain:

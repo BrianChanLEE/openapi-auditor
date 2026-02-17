@@ -1,0 +1,27 @@
+{
+  "metadata": {
+    "path": "/users",
+    "method": "POST",
+    "role": "READONLY",
+    "priority": "P1",
+    "category": "NETWORK",
+    "isSuccess": false,
+    "timestamp": "2026-02-17T13:21:54.523Z"
+  },
+  "request": {
+    "headers": {
+      "Authorization": "****",
+      "Content-Type": "application/json"
+    },
+    "payload": {
+      "name": "string"
+    }
+  },
+  "response": {
+    "error": ""
+  },
+  "analysis": {
+    "reason": "네트워크 오류: Connection Failed or Timeout",
+    "suggestedAction": "서버 생존 여부 확인 및 네트워크 상태 점검 필요"
+  }
+}

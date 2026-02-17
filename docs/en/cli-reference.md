@@ -20,9 +20,10 @@ Starts the diagnostic process. It will look for a config file if no options are 
 - `-d, --outputDir <dir>`: Report output directory (default: `./reports`).
 
 **CI/CD & Advanced Options:**
-- `--ci`: CI mode. Disables decorative logs and minimizes output.
-- `--summaryJson`: Prints a single-line JSON summary after execution.
-- `--failOn <level>`: Threshold for build failure. (Options: `P0`, `P1`, `P2`, `P3`. Default: `P1`).
+- `--ci`: Minimize console output for cleaner logs.
+- `--summaryJson`: Output a single-line JSON summary at the end.
+- `--failOn <P0|P1|P2|P3>`: Set the threshold for build failure (default: P1).
+- `--compare <path>`: Compare current results with a previous REPORT.json to detect regressions.
 
 ```bash
 npx openapi-auditor run --ci --failOn P0

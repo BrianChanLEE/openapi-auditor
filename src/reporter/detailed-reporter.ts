@@ -3,6 +3,8 @@ import path from 'path';
 import { AnalysisResult } from '../analyzer/result-analyzer';
 import { Priority } from '../analyzer/priority-engine';
 import { Masker } from '../utils/masker';
+import { CoverageMetrics } from '../analyzer/coverage-calculator';
+import { StatsUtils } from '../utils/stats';
 
 export interface EnrichedAnalysisResult extends AnalysisResult {
     priority: Priority;
@@ -10,7 +12,11 @@ export interface EnrichedAnalysisResult extends AnalysisResult {
 }
 
 export class DetailedReporter {
-    static generate(results: (AnalysisResult & { priority: Priority })[], outputDir: string): { jsonPath: string, enrichedResults: EnrichedAnalysisResult[] } {
+    static generate(
+        results: (AnalysisResult & { priority: Priority })[],
+        outputDir: string,
+        coverage?: CoverageMetrics
+    ): { jsonPath: string, enrichedResults: EnrichedAnalysisResult[] } {
         if (!fs.existsSync(outputDir)) {
             fs.mkdirSync(outputDir, { recursive: true });
         }
@@ -63,19 +69,31 @@ export class DetailedReporter {
             };
         });
 
+        const latencies = results.map(r => r.latency);
+        const performance = StatsUtils.getLatencyDistribution(latencies);
+
         // 1. JSON Report 생성
-        const jsonReport = {
+        const jsonReport: any = {
+            schemaVersion: '1.1.0',
+            metadata: {
+                target: outputDir,
+                timestamp: new Date().toISOString(),
+                platform: process.platform
+            },
             summary: {
                 total,
                 success,
                 failure,
                 successRate: total > 0 ? (success / total * 100).toFixed(1) : '0.0',
-                p0: results.filter(r => r.priority === Priority.P0).length,
-                p1: results.filter(r => r.priority === Priority.P1).length,
-                p2: results.filter(r => r.priority === Priority.P2).length,
-                p3: results.filter(r => r.priority === Priority.P3).length,
-                timestamp: new Date().toISOString()
+                priorityCounts: {
+                    p0: results.filter(r => r.priority === Priority.P0).length,
+                    p1: results.filter(r => r.priority === Priority.P1).length,
+                    p2: results.filter(r => r.priority === Priority.P2).length,
+                    p3: results.filter(r => r.priority === Priority.P3).length,
+                },
+                performance: performance
             },
+            coverage: coverage || null,
             results: enrichedResults.map(r => Masker.mask(r))
         };
 

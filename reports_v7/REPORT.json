@@ -1,0 +1,161 @@
+{
+  "schemaVersion": "1.1.0",
+  "metadata": {
+    "target": "/Users/youngchanlee/workFace/00_04_testingProject/reports_v7",
+    "timestamp": "2026-02-17T13:25:49.288Z",
+    "platform": "darwin"
+  },
+  "summary": {
+    "total": 6,
+    "success": 0,
+    "failure": 6,
+    "successRate": "0.0",
+    "priorityCounts": {
+      "p0": 0,
+      "p1": 6,
+      "p2": 0,
+      "p3": 0
+    },
+    "performance": {
+      "p50": 1,
+      "p90": 13,
+      "p95": 13,
+      "p99": 13,
+      "max": 13,
+      "min": 0,
+      "avg": 2.8333333333333335
+    }
+  },
+  "coverage": {
+    "contractCoverage": {
+      "totalEndpoints": 2,
+      "testedEndpoints": 2,
+      "percentage": "100.0"
+    },
+    "roleCoverage": {
+      "totalRoleEndpointCombinations": 6,
+      "testedCombinations": 6,
+      "percentage": "100.0"
+    },
+    "skippedEndpoints": []
+  },
+  "results": [
+    {
+      "path": "/users",
+      "method": "GET",
+      "role": "ADMIN",
+      "requestHeaders": {
+        "Authorization": "****",
+        "Content-Type": "application/json"
+      },
+      "latency": 13,
+      "error": "",
+      "timestamp": "2026-02-17T13:25:49.280Z",
+      "isSuccess": false,
+      "category": "NETWORK",
+      "reason": "네트워크 연결 또는 타임아웃이 발생했습니다",
+      "suggestedAction": "서버 상태 및 네트워크 인프라를 확인하십시오",
+      "priority": "P1",
+      "artifactPath": "artifacts/get__users_admin.json"
+    },
+    {
+      "path": "/users",
+      "method": "GET",
+      "role": "OPERATOR",
+      "requestHeaders": {
+        "Authorization": "****",
+        "Content-Type": "application/json"
+      },
+      "latency": 1,
+      "error": "",
+      "timestamp": "2026-02-17T13:25:49.282Z",
+      "isSuccess": false,
+      "category": "NETWORK",
+      "reason": "네트워크 연결 또는 타임아웃이 발생했습니다",
+      "suggestedAction": "서버 상태 및 네트워크 인프라를 확인하십시오",
+      "priority": "P1",
+      "artifactPath": "artifacts/get__users_operator.json"
+    },
+    {
+      "path": "/users",
+      "method": "GET",
+      "role": "READONLY",
+      "requestHeaders": {
+        "Authorization": "****",
+        "Content-Type": "application/json"
+      },
+      "latency": 0,
+      "error": "",
+      "timestamp": "2026-02-17T13:25:49.283Z",
+      "isSuccess": false,
+      "category": "NETWORK",
+      "reason": "네트워크 연결 또는 타임아웃이 발생했습니다",
+      "suggestedAction": "서버 상태 및 네트워크 인프라를 확인하십시오",
+      "priority": "P1",
+      "artifactPath": "artifacts/get__users_readonly.json"
+    },
+    {
+      "path": "/users",
+      "method": "POST",
+      "role": "ADMIN",
+      "requestPayload": {
+        "name": "string"
+      },
+      "requestHeaders": {
+        "Authorization": "****",
+        "Content-Type": "application/json"
+      },
+      "latency": 1,
+      "error": "",
+      "timestamp": "2026-02-17T13:25:49.285Z",
+      "isSuccess": false,
+      "category": "NETWORK",
+      "reason": "네트워크 연결 또는 타임아웃이 발생했습니다",
+      "suggestedAction": "서버 상태 및 네트워크 인프라를 확인하십시오",
+      "priority": "P1",
+      "artifactPath": "artifacts/post__users_admin.json"
+    },
+    {
+      "path": "/users",
+      "method": "POST",
+      "role": "OPERATOR",
+      "requestPayload": {
+        "name": "string"
+      },
+      "requestHeaders": {
+        "Authorization": "****",
+        "Content-Type": "application/json"
+      },
+      "latency": 1,
+      "error": "",
+      "timestamp": "2026-02-17T13:25:49.286Z",
+      "isSuccess": false,
+      "category": "NETWORK",
+      "reason": "네트워크 연결 또는 타임아웃이 발생했습니다",
+      "suggestedAction": "서버 상태 및 네트워크 인프라를 확인하십시오",
+      "priority": "P1",
+      "artifactPath": "artifacts/post__users_operator.json"
+    },
+    {
+      "path": "/users",
+      "method": "POST",
+      "role": "READONLY",
+      "requestPayload": {
+        "name": "string"
+      },
+      "requestHeaders": {
+        "Authorization": "****",
+        "Content-Type": "application/json"
+      },
+      "latency": 1,
+      "error": "",
+      "timestamp": "2026-02-17T13:25:49.287Z",
+      "isSuccess": false,
+      "category": "NETWORK",
+      "reason": "네트워크 연결 또는 타임아웃이 발생했습니다",
+      "suggestedAction": "서버 상태 및 네트워크 인프라를 확인하십시오",
+      "priority": "P1",
+      "artifactPath": "artifacts/post__users_readonly.json"
+    }
+  ]
+}

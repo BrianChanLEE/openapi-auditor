@@ -7,9 +7,13 @@ import { Logger } from '../utils/logger';
 import { ApiRunner } from '../runner/api-runner';
 import { TestSuite } from '../runner/test-suite';
 import { ResultAnalyzer } from '../analyzer/result-analyzer';
-import { PriorityEngine, Priority } from '../analyzer/priority-engine';
+import { PriorityEngine } from '../analyzer/priority-engine';
 import { MarkdownReporter } from '../reporter/markdown-reporter';
+import { PluginManager } from '../utils/plugin-manager';
+import { GitHubIntegrator } from '../utils/github-integrator';
 import { DetailedReporter } from '../reporter/detailed-reporter';
+import { CoverageCalculator } from '../analyzer/coverage-calculator';
+import { DiffEngine } from '../analyzer/diff-engine';
 
 const program = new Command();
 
@@ -75,6 +79,10 @@ program
     .option('--ci', 'CI 모드 실행 (로그 최소화)', false)
     .option('--summaryJson', '마지막에 JSON 요약 출력', false)
     .option('--failOn <level>', '빌드 실패 기준 우선순위 (P0, P1, P2, P3)', 'P1')
+    .option('--compare <path>', '이전 리포트와 비교하여 회귀 감지')
+    .option('--trace-rules', '사용된 규칙 평가 과정을 상세히 출력', false)
+    .option('--github-pr <number>', 'GitHub PR 번호 (코멘트 게시용)')
+    .option('--github-repo <repo>', 'GitHub 저장소 (owner/repo)')
     .action(async (options) => {
         try {
             let openapiPath = options.openapi;
@@ -105,32 +113,79 @@ program
                 Logger.info('--- 진단 프로세스 시작 ---');
             }
 
-            // 1. OpenAPI 로드
+            // 1. 문서 로드 및 엔드포인트 파싱
             const doc = await OpenApiLoader.load(openapiPath);
             const endpoints = OpenApiLoader.parseEndpoints(doc);
 
-            // 2. 테스트 실행
-            const runner = new ApiRunner(baseUrl, config.timeout || 5000);
+            // 플러그인 시스템 초기화 (v1.3.0)
+            const pluginManager = new PluginManager();
+            if (config.plugins) {
+                await pluginManager.load(config.plugins, config);
+            }
+            await pluginManager.emitBeforeRun(endpoints);
+
+            // 2. 실제 실행
+            const runner = new ApiRunner(baseUrl);
             const suite = new TestSuite(runner);
             const rawResults = await suite.runAll(endpoints);
+
+            await pluginManager.emitAfterRun(rawResults);
 
             // 3. 분석 및 우선순위 산정
             let maxPriorityScore = -1; // P3: 0, P2: 1, P1: 2, P0: 3
             const priorityMap: Record<string, number> = { 'P3': 0, 'P2': 1, 'P1': 2, 'P0': 3 };
 
+            // 설정에서 rules 로드 (v1.2.0 외부 규칙 지원)
+            const priorityEngine = new PriorityEngine(config.rules || [], { trace: options.traceRules });
+
             const baseAnalyzedResults = rawResults.map(res => {
                 const analysis = ResultAnalyzer.analyze(res);
-                const priority = PriorityEngine.calculate(analysis);
+                const { priority, reason, suggestedAction } = priorityEngine.calculate(analysis);
 
                 const score = priorityMap[priority] ?? -1;
                 if (score > maxPriorityScore) maxPriorityScore = score;
 
-                return { ...analysis, priority };
+                return {
+                    ...analysis,
+                    priority,
+                    reason: reason || analysis.reason,
+                    suggestedAction: suggestedAction || analysis.suggestedAction
+                };
             });
 
-            // 4. 리포트 생성 (JSON & Artifacts 먼저 생성하여 Markdown에 링크 제공)
-            const { jsonPath, enrichedResults } = DetailedReporter.generate(baseAnalyzedResults, outputDir);
-            const reportPath = MarkdownReporter.generate(enrichedResults, outputDir);
+            // 4. 커버리지 계산
+            const coverage = CoverageCalculator.calculate(endpoints, baseAnalyzedResults);
+
+            // 5. 이전 결과와 비교 (Diff)
+            let diffResults = null;
+            if (options.compare) {
+                try {
+                    diffResults = DiffEngine.compare(options.compare, baseAnalyzedResults);
+                    if (!options.ci) {
+                        Logger.info(`회귀 분석 완료: ${diffResults.regressions.length}개의 회귀 감지됨`);
+                    }
+                } catch (e: any) {
+                    Logger.warn(`비교 분석 실패: ${e.message}`);
+                }
+            }
+
+            // 6. 리포트 생성 (JSON & Artifacts 먼저 생성하여 Markdown에 링크 제공)
+            const { jsonPath, enrichedResults } = DetailedReporter.generate(baseAnalyzedResults, outputDir, coverage);
+            const reportPath = MarkdownReporter.generate(enrichedResults, outputDir, diffResults);
+            Logger.info(`진단 보고서 생성 완료: ${reportPath}`);
+
+            // 플러그인 리포트 훅 (v1.3.0)
+            await pluginManager.emitOnReport(reportPath);
+
+            // GitHub PR 연동 (v1.3.0)
+            if (options.githubPr) {
+                await GitHubIntegrator.postComment({
+                    repo: options.githubRepo || process.env.GITHUB_REPOSITORY || '',
+                    prNumber: options.githubPr,
+                    token: process.env.GITHUB_TOKEN || '',
+                    reportPath
+                });
+            }
 
             if (!options.ci) {
                 Logger.info('--- 진단 프로세스 완료 ---');

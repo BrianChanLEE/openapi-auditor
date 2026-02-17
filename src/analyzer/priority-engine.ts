@@ -1,44 +1,24 @@
-import { AnalysisResult, FailureCategory } from './result-analyzer';
-import { UserRole } from '../auth/jwt-provider';
+import { AnalysisResult } from './result-analyzer';
+import { RuleEngine, AuditRule } from './rule-engine';
 
 export enum Priority {
-    P0 = 'P0', // Critical: Security breach, Server crash
-    P1 = 'P1', // High: Core functionality broken, Auth failure
-    P2 = 'P2', // Medium: Validation error, Performance
-    P3 = 'P3'  // Low: Doc mismatch, Minor UI
+    P0 = 'P0', // Critical
+    P1 = 'P1', // High
+    P2 = 'P2', // Medium
+    P3 = 'P3'  // Low
 }
 
 export class PriorityEngine {
-    static calculate(analysis: AnalysisResult): Priority {
-        if (analysis.isSuccess) {
-            // 권한 과허용 체크 (Security Leak)
-            // READONLY 계정이 POST/PUT/DELETE에 성공한 경우 P0
-            if (analysis.role === UserRole.READONLY && ['POST', 'PUT', 'DELETE', 'PATCH'].includes(analysis.method)) {
-                return Priority.P0;
-            }
-            return Priority.P3; // 성공한 케이스는 기본적으로 낮은 우선순위 (또는 분석 대상 제외)
-        }
+    private ruleEngine: RuleEngine;
 
-        // 실패 케이스 분석
-        switch (analysis.category) {
-            case FailureCategory.SERVER_ERR:
-                return Priority.P0; // 서버 에러는 무조건 P0
+    constructor(customRules: AuditRule[] = [], options: { trace?: boolean } = {}) {
+        this.ruleEngine = new RuleEngine(customRules, options);
+    }
 
-            case FailureCategory.AUTH:
-                // ADMIN이 인증 실패하는 것은 P1, 그 외는 P2
-                return analysis.role === UserRole.ADMIN ? Priority.P1 : Priority.P2;
-
-            case FailureCategory.NETWORK:
-                return Priority.P1; // 시스템 불능 상태로 간주
-
-            case FailureCategory.VALIDATION:
-                return Priority.P2;
-
-            case FailureCategory.NOT_FOUND:
-                return Priority.P2;
-
-            default:
-                return Priority.P3;
-        }
+    /**
+     * 규칙 엔진을 사용하여 우선순위 및 관련 가이드를 산출합니다.
+     */
+    calculate(analysis: AnalysisResult): { priority: Priority, reason?: string, suggestedAction?: string } {
+        return this.ruleEngine.evaluate(analysis);
     }
 }

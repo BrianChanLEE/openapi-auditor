@@ -20,9 +20,10 @@ API 품질 진단을 실행합니다. 옵션이 지정되지 않으면 설정 �
 - `-d, --outputDir <dir>`: 리포트 저장 디렉토리 (기본값: `./reports`).
 
 **CI/CD 전용 옵션:**
-- `--ci`: CI 모드 활성화. 장식성 로그를 제거하고 출력을 최소화합니다.
-- `--summaryJson`: 실행 완료 후 마지막에 JSON 형태의 요약 정보를 출력합니다.
-- `--failOn <level>`: 빌드 실패(종료 코드 1)를 유발할 최소 우선순위 수준 (설정 가능: `P0`, `P1`, `P2`, `P3`. 기본값: `P1`).
+- `--ci`: 로그 출력을 최소화하는 CI 모드입니다.
+- `--summaryJson`: 실행 종료 시 한 줄의 요약 JSON을 출력합니다.
+- `--failOn <P0|P1|P2|P3>`: 빌드 실패(Exit Code > 0) 기준을 설정합니다 (기본값: P1).
+- `--compare <path>`: 이전 REPORT.json과 비교하여 회귀(Regression)를 분석합니다.
 
 ```bash
 npx openapi-auditor run --ci --failOn P0

@@ -8,7 +8,7 @@
 
 ---
 
-## ⚡ Quick Start
+## Quick Start
 
 Get started in less than a minute.
 
@@ -33,7 +33,7 @@ Open `./reports/REPORT.md` to see the diagnosis results.
 
 ---
 
-## ✨ Key Features
+## Key Features
 
 - **Automated Audit**: Full coverage of all endpoints defined in your OpenAPI spec.
 - **Intelligent Payload Generation**: Automatically generates valid test data based on schemas.
@@ -41,7 +41,7 @@ Open `./reports/REPORT.md` to see the diagnosis results.
 - **Diagnosis & Guidance**: Not just 'fail', but 'why' and 'how to fix' with P0-P3 prioritization.
 - **Expert Reports**: Generates professional `REPORT.md` with statistics and risk analysis.
 
-## 📊 Why openapi-auditor?
+## Why openapi-auditor?
 
 The "Auditor" sits at the intersection of **Contract Testing**, **Runtime Validation**, and **Security Auditing**.
 
@@ -66,12 +66,12 @@ graph TD
 
 ---
 
-## 📄 Documentation
+## Documentation
 
 - [English (EN)](./docs/en/getting-started.md)
 - [한국어 (KO)](./README.ko.md) / [상세 문서](./docs/ko/getting-started.md)
 
-## 🛠 Intelligence Configuration
+## Intelligence Configuration
 
 You can use `${ENV_VAR}` syntax to inject secrets from environment variables.
 
@@ -84,7 +84,7 @@ You can use `${ENV_VAR}` syntax to inject secrets from environment variables.
 }
 ```
 
-## 🚀 CI/CD Integration
+## CI/CD Integration
 
 `openapi-auditor` is designed for modern CI pipelines with a specialized CI mode and flexible exit policies.
 
@@ -107,22 +107,22 @@ You can use `${ENV_VAR}` syntax to inject secrets from environment variables.
     ADMIN_TOKEN: ${{ secrets.ADMIN_TOKEN }}
 ```
 
-## 📦 Artifacts & Intelligence Reports
+## Artifacts and Intelligence Reports
 - `reports/REPORT.md`: Human-readable summary with fix guidance.
 - `reports/REPORT.json`: Machine-readable results for integration.
 - `reports/artifacts/*.json`: Detailed, masked request/response logs for every failure.
 
-## ⚠️ Supported Versions & Limitations
+## Supported Versions and Limitations
 
 - **OpenAPI**: 3.0.x (Full support), 2.0 (Limited)
 - **Authentication**: Role-based JWT is preferred.
 - **Limitations**: Complex state-dependent flows (e.g., A must be created before B) require tailored data in the spec examples.
 
-## 🤝 Contributing
+## Contributing
 
 See [CONTRIBUTING.md](./CONTRIBUTING.md).
 
-## 🛡️ Security
+## Security
 
 See [SECURITY.md](./SECURITY.md).
 
