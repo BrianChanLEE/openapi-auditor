@@ -71,16 +71,46 @@ graph TD
 - [English (EN)](./docs/en/getting-started.md)
 - [한국어 (KO)](./README.ko.md) / [상세 문서](./docs/ko/getting-started.md)
 
-## 🛠 Minimal Configuration
+## 🛠 Intelligence Configuration
+
+You can use `${ENV_VAR}` syntax to inject secrets from environment variables.
 
 ```json
 {
   "openapi": "./openapi.json",
-  "baseUrl": "http://localhost:3000",
+  "baseUrl": "${API_URL}",
   "timeout": 5000,
   "outputDir": "./reports"
 }
 ```
+
+## 🚀 CI/CD Integration
+
+`openapi-auditor` is designed for modern CI pipelines with a specialized CI mode and flexible exit policies.
+
+### CLI Options for CI
+- `--ci`: Minimize console output for cleaner logs.
+- `--summaryJson`: Output a single-line JSON summary at the end.
+- `--failOn <P0|P1|P2|P3>`: Set the threshold for build failure (default: `P1`).
+- **Exit Codes**:
+  - `0`: Success (or only low-priority warnings).
+  - `1`: Found issues at or above `failOn` level.
+  - `2`: Critical (P0) issues found.
+
+### GitHub Actions Example
+```yaml
+- name: API Quality Audit
+  run: |
+    npx openapi-auditor run --ci --failOn P0
+  env:
+    API_URL: ${{ secrets.STAGING_API_URL }}
+    ADMIN_TOKEN: ${{ secrets.ADMIN_TOKEN }}
+```
+
+## 📦 Artifacts & Intelligence Reports
+- `reports/REPORT.md`: Human-readable summary with fix guidance.
+- `reports/REPORT.json`: Machine-readable results for integration.
+- `reports/artifacts/*.json`: Detailed, masked request/response logs for every failure.
 
 ## ⚠️ Supported Versions & Limitations
 

@@ -1,34 +1,48 @@
-# Report Format (`REPORT.md`)
+# Report Format
 
-The automatically generated `REPORT.md` is designed to be shared with stakeholders and developers as a clear action plan.
+The automatically generated report suite is designed for both human review and machine-driven CI pipelines.
 
-## Structure
+## 📄 `REPORT.md` (Human Readable)
 
-### 1. Overall Summary
-A high-level view of the API health.
-- **Success Rate**: Percentage of requests that met both contract and performance criteria.
-- **Average Latency**: Overall speed of the API.
-- **Issue Counts**: Breakdown of P0, P1, P2, and P3 issues.
+Designed to be shared with stakeholders and developers as a clear action plan.
 
-### 2. Priority Issues (P0 ~ P1)
-This section lists critical bugs that require immediate fixing.
-- **P0 examples**: Server crashes (500), Security leaks (READONLY access to POST).
-- **P1 examples**: Authentication failures on valid Admin accounts.
+### Structure
+1. **Overall Summary**: Statistics on success rate, latency, and issues by priority.
+2. **Priority Issues (P0 ~ P1)**: Detailed cards for critical bugs that require immediate attention.
+3. **Artifact Links**: Each failure card includes a direct link to a detailed JSON artifact for deep debugging.
+4. **Risk Analysis Table**: A sortable list of all tested endpoints.
 
-### 3. Diagnosis Cards
-For each failure, a detailed card is generated:
-- **Endpoint**: Method and Path.
-- **Role**: Which user role was being tested.
-- **Reason**: The root cause (e.g., "Network Timeout", "401 Unauthorized").
-- **Fix Guidance**: Actionable steps to resolve the issue.
+---
 
-### 4. Risk Analysis Table
-A sortable table containing all test cases, categorized by priority and role.
+## 🤖 `REPORT.json` (Machine Readable)
 
-## How to use the report
-1. **CI/CD Integration**: Review the report after every automated deployment.
-2. **Issue Tracking**: Use the "Fix Guidance" text to populate tasks in Jira or GitHub Issues.
-3. **Collaboration**: Share the MD file with the backend team for quick debugging using the provided logs.
+A structured version of the audit results, perfect for custom CI scripts or dashboard integration.
+
+```json
+{
+  "summary": {
+    "total": 42,
+    "success": 38,
+    "failure": 4,
+    "successRate": "90.5",
+    "p0": 1,
+    "p1": 2,
+    "timestamp": "2024-02-17T..."
+  },
+  "results": [ ... ]
+}
+```
+
+---
+
+## 📦 `artifacts/*.json` (Detailed Logs)
+
+For every failed test, a dedicated JSON file is created in the `artifacts/` folder.
+These files contain:
+- **Masked Headers**: Bearer tokens and cookies are automatically redacted.
+- **Full Payload**: Request data used for the test.
+- **Detailed Response**: Status code, body, and specific error messages.
+- **Fix Guidance**: A copy of the "how to fix" advice from the main report.
 
 ---
 

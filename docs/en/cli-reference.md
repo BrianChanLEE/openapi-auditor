@@ -14,14 +14,18 @@ npx openapi-auditor init
 ### `run`
 Starts the diagnostic process. It will look for a config file if no options are provided.
 
-**Options:**
+**Primary Options:**
 - `-o, --openapi <path>`: Path to OpenAPI spec.
 - `-b, --baseUrl <url>`: Target server URL.
 - `-d, --outputDir <dir>`: Report output directory (default: `./reports`).
-- `-t, --timeout <ms>`: Individual request timeout.
+
+**CI/CD & Advanced Options:**
+- `--ci`: CI mode. Disables decorative logs and minimizes output.
+- `--summaryJson`: Prints a single-line JSON summary after execution.
+- `--failOn <level>`: Threshold for build failure. (Options: `P0`, `P1`, `P2`, `P3`. Default: `P1`).
 
 ```bash
-npx openapi-auditor run -o spec.json -b http://localhost:8080
+npx openapi-auditor run --ci --failOn P0
 ```
 
 ### `validate`
@@ -33,8 +37,9 @@ npx openapi-auditor validate ./openapi.json
 
 ## Exit Codes
 
-- `0`: Success (All tests completed, regardless of pass/fail counts).
-- `1`: Infrastructure Failure (Config missing, network down, invalid spec).
+- `0`: Success (No issues found, or all issues are below the `--failOn` threshold).
+- `1`: Failure (Issues at or above `--failOn` threshold (P1+) found, or environment error).
+- `2`: Critical Failure (P0 issues found).
 
 ---
 

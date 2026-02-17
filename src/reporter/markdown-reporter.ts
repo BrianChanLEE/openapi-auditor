@@ -5,7 +5,7 @@ import { Priority } from '../analyzer/priority-engine';
 import { Logger } from '../utils/logger';
 
 export class MarkdownReporter {
-    static generate(results: (AnalysisResult & { priority: Priority })[], outputDir: string): string {
+    static generate(results: (AnalysisResult & { priority: Priority, artifactPath?: string })[], outputDir: string): string {
         if (!fs.existsSync(outputDir)) {
             fs.mkdirSync(outputDir, { recursive: true });
         }
@@ -52,15 +52,20 @@ export class MarkdownReporter {
                 content += `- **결과**: ${issue.isSuccess ? '성공 (권한 과허용)' : '실패'}\n`;
                 content += `- **분류**: ${issue.category}\n`;
                 content += `- **로그/원인**: ${issue.reason || '없음'}\n`;
-                content += `- **수정 가이드**: ${issue.suggestedAction || '없음'}\n\n`;
+                content += `- **수정 가이드**: ${issue.suggestedAction || '없음'}\n`;
+                if (issue.artifactPath) {
+                    content += `- **상세 데이터**: [상세 보기(Artifact)](${issue.artifactPath})\n`;
+                }
+                content += `\n`;
             });
         }
 
         content += `## 3. 전체 리스크 분석\n\n`;
-        content += `| 우선순위 | Method | Path | Role | 원인 |\n`;
-        content += `| :--- | :--- | :--- | :--- | :--- |\n`;
+        content += `| 우선순위 | Method | Path | Role | 원인 | Artifact |\n`;
+        content += `| :--- | :--- | :--- | :--- | :--- | :--- |\n`;
         results.sort((a, b) => a.priority.localeCompare(b.priority)).forEach(r => {
-            content += `| ${r.priority} | ${r.method} | ${r.path} | ${r.role} | ${r.reason || 'N/A'} |\n`;
+            const artifactLink = r.artifactPath ? `[Link](${r.artifactPath})` : '-';
+            content += `| ${r.priority} | ${r.method} | ${r.path} | ${r.role} | ${r.reason || 'N/A'} | ${artifactLink} |\n`;
         });
 
         content += `\n---\n*본 보고서는 API 품질 진단 플랫폼에 의해 자동 생성되었습니다.*`;
