@@ -1,0 +1,52 @@
+{
+  "name": "openapi-auditor",
+  "version": "1.0.0",
+  "description": "Standardized OpenAPI quality auditing platform with diagnostic reports",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "bin": {
+    "openapi-auditor": "dist/cli/index.js"
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "README.ko.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "cli": "ts-node src/cli/index.ts",
+    "dev": "ts-node src/index.ts",
+    "typecheck": "tsc --noEmit",
+    "test": "jest",
+    "prepack": "npm run build"
+  },
+  "keywords": [
+    "openapi",
+    "swagger",
+    "audit",
+    "quality",
+    "test",
+    "api"
+  ],
+  "author": "Brian Chan LEE",
+  "license": "MIT",
+  "type": "commonjs",
+  "dependencies": {
+    "@apidevtools/swagger-parser": "^12.1.0",
+    "axios": "^1.13.5",
+    "chalk": "^4.1.2",
+    "commander": "^14.0.3",
+    "jsonwebtoken": "^9.0.3"
+  },
+  "devDependencies": {
+    "@types/chalk": "^0.4.31",
+    "@types/jest": "^30.0.0",
+    "@types/jsonwebtoken": "^9.0.10",
+    "@types/node": "^25.2.3",
+    "jest": "^30.2.0",
+    "ts-jest": "^29.4.6",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.9.3"
+  }
+}
